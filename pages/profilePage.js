@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, Image, StyleSheet, SafeAreaView, ScrollView , TouchableOpacity} from 'react-native';
 import RepoBox from '../components/repoBox';
 import {SvgUri} from "react-native-svg";
+import { NavigationContainer ,useNavigation} from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 
 const ProfilePage = ({ route }) => {
+  const navigation=useNavigation();
+
   const { token } = route.params;
   const [user, setUser] = useState(null);
   const [repos, setRepos] = useState([]);
@@ -64,6 +69,9 @@ const ProfilePage = ({ route }) => {
           <Text style={styles.location}>{user.location}</Text>
           {/* <SvgUri style={styles.ghchart} width="80% " uri= {"https://ghchart.rshah.org/"+user.login}  /> */}
           <SvgUri style={styles.ghchart} width="80%" uri= {"https://ghchart.rshah.org/"+user.login}  />
+          <TouchableOpacity style={styles.touchOp} onPress={() => navigation.navigate('starredRepos',{token:token})}>
+                <Text style={styles.starredRepos}>Starred Repositories</Text>
+            </TouchableOpacity>
 
 
           <View style={styles.statsContainer}>
@@ -86,8 +94,10 @@ const ProfilePage = ({ route }) => {
           </View>
 
           <View style={styles.reposContainer}>
-            
+
+
             <Text style={styles.reposHeading}>Repositories</Text>
+
 
             {repos.map((repo, index) => (
           <RepoBox key={index.toString()} repo={repo} />
@@ -163,6 +173,13 @@ const styles = StyleSheet.create({
     reposContainer:{
         width: '80%',
         // height: 80,
-    }
+    },
+    touchOp:{
+        backgroundColor: 'gold',
+        width: '80%',
+        padding: 10,
+        // marginBottom: 10,
+        marginTop: 20,
+    },
   });
 export default ProfilePage;

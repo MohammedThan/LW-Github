@@ -70,7 +70,7 @@ const App = () => {
       const fetchToken = async () => {
         const tokenData = await getToken(code);
         // console.log(tokenData)
-        navigation.replace('MyTabs', { token: tokenData });
+        navigation.replace('ProfilePage', { token: tokenData });
       };
   
       fetchToken();
