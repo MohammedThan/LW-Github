@@ -1,4 +1,6 @@
 import React from 'react';
+import {useState} from 'react';
+
 import { Linking } from 'react-native';
 import {View, Text, Image, ScrollView, TextInput,SafeAreaView,StyleSheet, TouchableOpacity} from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
@@ -7,14 +9,14 @@ import { Button } from 'react-native';
 import { NavigationContainer ,useNavigation} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// const CLIENT_ID="be56a6917c47b7c7871e"
+const CLIENT_ID="37ab602858fd75fbfa36"
 
 WebBrowser.maybeCompleteAuthSession();
 
 const discovery = {
   authorizationEndpoint: 'https://github.com/login/oauth/authorize',
   tokenEndpoint: 'https://github.com/login/oauth/access_token',
-  revocationEndpoint: 'https://github.com/settings/connections/applications/be56a6917c47b7c7871e',
+  revocationEndpoint: 'https://github.com/settings/connections/applications/'+CLIENT_ID,
 };
 
 // function loginWithGithub(){
@@ -23,11 +25,12 @@ const discovery = {
 
 const App = () => {
   const navigation=useNavigation();
+  const [authToken,setAuthTokenState] = useState(0); 
 
   const [request, response, promptAsync] = useAuthRequest(
     {
-      clientId: 'be56a6917c47b7c7871e',
-      scopes: ['user','repo'],
+      clientId: CLIENT_ID,
+      scopes: [],
       redirectUri: makeRedirectUri({
         scheme: 'your.app'
       }),
@@ -35,38 +38,44 @@ const App = () => {
     discovery
   );
 
+  const getToken= async (code) =>{
+      const tokenRes=await fetch("https://github.com/login/oauth/access_token",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          Accept:"application/json",
+        },
+        body:JSON.stringify({
+          code:code,
+          client_id:CLIENT_ID,
+          client_secret:"535e136ac49021e3d675aa0f9fb159497e69b77d"
+        }),
+      });
+
+      if (!tokenRes.ok) {
+        throw new Error(
+          `Token request failed with status: ${tokenRes.status}`
+        );
+      }
+      const tokenData= await tokenRes.json();
+      // console.log(tokenData)
+      // console.log(tokenData.access_token)
+      return tokenData.access_token;
+  }
+
   React.useEffect(() => {
     if (response?.type === 'success') {
       const { code } = response.params;
-      console.log(code)
-      console.log(response.params)
-      
-      const token= async () =>{
-      try{
-        const tokenRes=await fetch("https://github.com.login.oauth/access/access_token",{
-          method:"POST",
-          headers:{
-            "Content-Type":"application/json",
-            Accept:"application/json",
-          },
-          body:JSON.stringify({
-            code:code,
-            client_id:"be56a6917c47b7c7871e",
-            client_secret:"6518052f14c572ccdcb3f76231989de9c23b1401"
-          }),
-        });
-
-        const tokenData= await tokenRes.json();
-        const authToken=await tokenData.access_token;
-        setAuthTokenState(authToken);
-
-      }
-
+  
+      const fetchToken = async () => {
+        const tokenData = await getToken(code);
+        // console.log(tokenData)
+        navigation.replace('MyTabs', { token: tokenData });
+      };
+  
+      fetchToken();
     }
-
-      navigation.replace("Home",{code:code})
-    }
-  }, [response]);
+  }, [response, authToken]);
 
   
   return (
@@ -80,21 +89,16 @@ const App = () => {
         </View>
 
         <View> 
-          <TouchableOpacity style={styles.button} onPress={() => {
+          <TouchableOpacity        disabled={!request}
+            style={styles.button} onPress={() => {
               promptAsync();
             }} 
-            disabled={!request}
              >
             <Text style={styles.text}>Login with Github</Text>
 
           </TouchableOpacity>
-        </View>
-        
-
-      
+        </View>  
     </SafeAreaView>
-
-    
   );
 };
 const styles = StyleSheet.create({
@@ -150,26 +154,3 @@ const styles = StyleSheet.create({
   // }
 });
 export default App;
-
-
-
-// import { StatusBar } from 'expo-status-bar';
-// import { StyleSheet, Text, View } from 'react-native';
-
-// export default function App() {
-//   return (
-//     <View style={styles.container}>
-//       <Text>Hi, Open up App.js to start working on your app!</Text>
-//       <StatusBar style="auto" />
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });
