@@ -1,6 +1,5 @@
 import React from 'react';
 import {useState} from 'react';
-
 import { Linking } from 'react-native';
 import {View, Text, Image, ScrollView, TextInput,SafeAreaView,StyleSheet, TouchableOpacity} from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
@@ -8,6 +7,9 @@ import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
 import { Button } from 'react-native';
 import { NavigationContainer ,useNavigation} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+// import {getToken} from "../functions/index.js"
+import axios from 'axios';
+
 
 const CLIENT_ID="37ab602858fd75fbfa36"
 
@@ -38,38 +40,59 @@ const App = () => {
     discovery
   );
 
-  const getToken= async (code) =>{
-      const tokenRes=await fetch("https://github.com/login/oauth/access_token",{
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json",
-          Accept:"application/json",
-        },
-        body:JSON.stringify({
-          code:code,
-          client_id:CLIENT_ID,
-          client_secret:"535e136ac49021e3d675aa0f9fb159497e69b77d"
-        }),
-      });
+  // const getToken= async (code) =>{
+  //     const tokenRes=await fetch("https://github.com/login/oauth/access_token",{
+  //       method:"POST",
+  //       headers:{
+  //         "Content-Type":"application/json",
+  //         Accept:"application/json",
+  //       },
+  //       body:JSON.stringify({
+  //         code:code,
+  //         client_id:CLIENT_ID,
+  //         client_secret:"535e136ac49021e3d675aa0f9fb159497e69b77d"
+  //       }),
+  //     });
 
-      if (!tokenRes.ok) {
-        throw new Error(
-          `Token request failed with status: ${tokenRes.status}`
-        );
-      }
-      const tokenData= await tokenRes.json();
-      // console.log(tokenData)
-      // console.log(tokenData.access_token)
-      return tokenData.access_token;
+  //     if (!tokenRes.ok) {
+  //       throw new Error(
+  //         `Token request failed with status: ${tokenRes.status}`
+  //       );
+  //     }
+  //     const tokenData= await tokenRes.json();
+  //     // console.log(tokenData)
+  //     // console.log(tokenData.access_token)
+  //     return tokenData.access_token;
+  // }
+
+    const getToken= async (code) =>{
+      const fuserToken= await axios.get(`https://gettoken-e5ufdk7m4q-uc.a.run.app`,{
+        params: {
+          code: code,
+          CLIENT_ID: CLIENT_ID,
+        },
+        });
+      // console.log(fuserRepo.data);
+      return fuserToken.data;
   }
+
 
   React.useEffect(() => {
     if (response?.type === 'success') {
       const { code } = response.params;
+      console.log(`code: ${code}`)
   
+      // const fetchToken = async () => {
+      //   const tokenData = await fetch(`https://gettoken-e5ufdk7m4q-uc.a.run.app?code=${code}&CLIENT_ID=${CLIENT_ID}`);
+      //   console.log(`tokenData: ${tokenData.text()}`)
+      //   navigation.replace('ProfilePage', { token: tokenData });
+      // };
+
+
       const fetchToken = async () => {
         const tokenData = await getToken(code);
-        // console.log(tokenData)
+        console.log(`tokenData: ${tokenData}`)
+        // console.log(`tokenData: ${tokenData.text()}`)
         navigation.replace('ProfilePage', { token: tokenData });
       };
   
@@ -110,6 +133,7 @@ const styles = StyleSheet.create({
     justifyContent:"center",
     height: '100%',
     textAlign: 'center',
+    backgroundColor: 'white',
   },
   input: {
     height: "5%",

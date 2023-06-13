@@ -31,6 +31,10 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 16,
     elevation: 2,
+    borderColor: '#000000',
+    borderWidth: 1,
+    width: "90%",
+    
   },
   avatar: {
     width: 64,
@@ -59,7 +63,8 @@ const styles = StyleSheet.create({
   },
   language: {
     fontSize: 12,
-    color: '#777777',
+    // color: '#777777',
+    fontWeight: 'bold',
   },
   stars: {
     fontSize: 12,
