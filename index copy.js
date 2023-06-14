@@ -8,7 +8,7 @@
  */
 
 const {onRequest} = require("firebase-functions/v2/https");
-// const axios = require("axios");
+const axios = require("axios");
 
 exports.getUser = onRequest(async (req, res) => {
   const {token} = req.query;
@@ -117,15 +117,11 @@ exports.getRepoWebhook= onRequest(async (req, res) => {
       console.log(payload.issue.body);
       console.log(payload.issue.html_url);
 
-      await fetch(payload.issue.html_url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
+      await axios.get(payload.issue.html_url, {
+        params: {
+          "issueUrl": payload.issue.body,
+          "comment": payload.issue.body,
         },
-        body: JSON.stringify({
-          issueUrl: payload.issue.body,
-          comment: payload.issue.body,
-        }),
       });
     } else {
       console.log(payload.issue.user.login);
@@ -136,41 +132,41 @@ exports.getRepoWebhook= onRequest(async (req, res) => {
   }
 });
 
-// exports.replyToGitHubIssue = onRequest(async (req, res) => {
-//   try {
-//     const {issueUrl} = req.query;
-//     const {comment} = req.query;
-//     const fToken="github_pat_11BAR3EFY0lL6UWFuscSdT_IfPfXoJBl";
-//     const eToken="PAU6Yj5jGu2XQ7KFkcRrIK6XqamEydcZ7pCTMTMVIWTfBU54AX";
-//     const token = fToken+eToken;
-//     const url = `${issueUrl}/comments`;
-//     const headers = {
-//       "Authorization": `Bearer ${token}`,
-//       "Content-Type": "application/json",
-//     };
+exports.replyToGitHubIssue = onRequest(async (req, res) => {
+  try {
+    const {issueUrl} = req.query;
+    const {comment} = req.query;
+    const fToken="github_pat_11BAR3EFY0lL6UWFuscSdT_IfPfXoJBl";
+    const eToken="PAU6Yj5jGu2XQ7KFkcRrIK6XqamEydcZ7pCTMTMVIWTfBU54AX";
+    const token = fToken+eToken;
+    const url = `${issueUrl}/comments`;
+    const headers = {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
 
-//     const data = {
-//       body: comment,
-//     };
+    const data = {
+      body: comment,
+    };
 
-//     const fetchOptions = {
-//       method: "POST",
-//       headers: headers,
-//       body: JSON.stringify(data),
-//     };
+    const fetchOptions = {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(data),
+    };
 
-//     const githubResponse = await fetch(url, fetchOptions);
+    const githubResponse = await fetch(url, fetchOptions);
 
-//     if (githubResponse.ok) {
-//       res.send("Comment created successfully");
-//     } else {
-//       res.status(500).send("Error creating comment");
-//     }
-//   } catch (error) {
-//     console.error("An error occurred:", error);
-//     res.status(500).send("An error occurred");
-//   }
-// });
+    if (githubResponse.ok) {
+      res.send("Comment created successfully");
+    } else {
+      res.status(500).send("Error creating comment");
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+    res.status(500).send("An error occurred");
+  }
+});
 
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started
