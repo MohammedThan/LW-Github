@@ -90,11 +90,7 @@ const ProfilePage = ({ route }) => {
   }
 
   const getUserRepos = async () => {
-    const fuserRepo= await axios.get(`https://getrepos-e5ufdk7m4q-uc.a.run.app`,{
-        params: {
-          token: token,
-        },
-        });
+
       // console.log(fuserRepo.data);
       setRepos(fuserRepo.data);
   }
@@ -220,8 +216,8 @@ const styles = StyleSheet.create({
     profileContainer: {
       // alignItems: 'center',
       // paddingVertical: 20,
-      borderTopColor:"white",
-      borderTopWidth: 6,
+      // borderTopColor:"white",
+      // borderTopWidth: 1,
       
     },
     avatar: {
