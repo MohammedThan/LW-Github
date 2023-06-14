@@ -6,9 +6,11 @@ const RepoBox = ({ repo }) => {
     Linking.openURL(repo.html_url);
   };
 
+
   return (
+    
     <TouchableOpacity style={styles.container} onPress={handleRepoPress}>
-      {/* <Image source={{ uri: repo.avatarUrl }} style={styles.avatar} /> */}
+      <Image source={{ uri: repo.owner.avatar_url }} style={styles.avatar} />
       <View style={styles.content}>
         {/* <Text style={styles.name}>{key}</Text> */}
         <Text style={styles.name}>{repo.name}</Text>

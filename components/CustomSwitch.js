@@ -40,7 +40,6 @@ export default function CustomSwitch({
           style={{
             color: getSelectionMode == 1 ? 'white' : '#000000',
             fontSize: 14,
-            fontFamily: 'Roboto-Medium',
           }}>
           {option1}
         </Text>
@@ -59,7 +58,6 @@ export default function CustomSwitch({
           style={{
             color: getSelectionMode == 2 ? 'white' : '#000000',
             fontSize: 14,
-            fontFamily: 'Roboto-Medium',
           }}>
           {option2}
         </Text>

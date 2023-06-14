@@ -131,8 +131,6 @@ const ProfilePage = ({ route }) => {
     getUserRepos();
     getStarredRepos();
 
-
-
   }, [token]);
 
   return (
@@ -176,7 +174,7 @@ const ProfilePage = ({ route }) => {
             </TouchableOpacity> */}
 
 
-            <CustomSwitch style={styles.switch} selectionMode={1} option1={"Repositories"} option2={"starred"} onSelectSwitch={onSelect}/>
+            <CustomSwitch style={styles.switch} selectionMode={1} option1={"Repositories"} option2={"Starred"} onSelectSwitch={onSelect}/>
 
 
 
@@ -184,7 +182,9 @@ const ProfilePage = ({ route }) => {
 
               <View style={styles.centerAlign}>
 
-              {tab==1 && repos.map((repo, index) => (
+              
+              {tab==1 &&
+               repos.map((repo, index) => (
               <RepoBox key={index.toString()} repo={repo} />
               ))}
               
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
       // alignItems: 'center',
       // paddingVertical: 20,
       borderTopColor:"white",
-      borderTopWidth: 1,
+      borderTopWidth: 6,
       
     },
     avatar: {
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     bView:{
       backgroundColor: "black",
       width: "100%",
-      height: "16%",
+      height: 250,
       alignItems: 'center',
       // borderBottomColor: 'white',
       // borderTopWidth:8,
